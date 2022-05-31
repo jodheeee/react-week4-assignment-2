@@ -1,19 +1,45 @@
-import { changeRestaurantData, addRestaurantData } from './reducerService';
-
-const initialState = {
+const initialRestaurant = {
   name: '',
   category: '',
   address: '',
-  restaurants: [],
 };
 
-const operations = {
-  changeRestaurantData: (state, action) => changeRestaurantData(state, action),
-  addRestaurantData: (state) => addRestaurantData(state),
+const initialState = {
+  newId: 100,
+  restaurants: [],
+  restaurant: initialRestaurant,
 };
 
 export default function reducer(state = initialState, action) {
-  return operations[action.type]
-    ? (operations[action.type](state, action))
-    : (state);
+  if (action.type === 'setRestaurants') {
+    const { restaurants } = action.payload;
+    return {
+      ...state,
+      restaurants,
+      restaurant: initialRestaurant,
+    };
+  }
+
+  if (action.type === 'changeRestaurantField') {
+    const { name, value } = action.payload;
+    return {
+      ...state,
+      restaurant: {
+        ...state.restaurant,
+        [name]: value,
+      },
+    };
+  }
+
+  if (action.type === 'addRestaurant') {
+    const { newId, restaurants, restaurant } = state;
+    return {
+      ...state,
+      newId: newId + 1,
+      restaurants: [...restaurants, { ...restaurant, id: newId }],
+      restaurant: initialRestaurant,
+    };
+  }
+
+  return state;
 }

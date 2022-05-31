@@ -1,6 +1,15 @@
-export function changeRestaurantData(name, value) {
+export function setRestaurants(restaurants) {
   return {
-    type: 'changeRestaurantData',
+    type: 'setRestaurants',
+    payload: {
+      restaurants,
+    },
+  };
+}
+
+export function changeRestaurantField({ name, value }) {
+  return {
+    type: 'changeRestaurantField',
     payload: {
       name,
       value,
@@ -8,8 +17,8 @@ export function changeRestaurantData(name, value) {
   };
 }
 
-export function addRestaurantData() {
+export function addRestaurant() {
   return {
-    type: 'addRestaurantData',
+    type: 'addRestaurant',
   };
 }

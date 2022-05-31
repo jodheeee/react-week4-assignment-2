@@ -1,67 +1,64 @@
 import reducer from './reducer';
 
-import {
-  changeRestaurantData,
-  addRestaurantData,
-} from './actions';
+import { setRestaurants, addRestaurant, changeRestaurantField } from './actions';
+
+import restaurants from '../fixtures/restaurants';
 
 describe('reducer', () => {
-  describe('changeRestaurantData', () => {
-    it('changes input data', () => {
-      const state = reducer({ name: '중국집' }, changeRestaurantData('name', '중국집'));
+  describe('setRestaurants', () => {
+    it('changes restaurants array', () => {
+      const initailState = {
+        restaurants: [],
+      };
 
-      expect(state.name).toBe('중국집');
+      const state = reducer(initailState, setRestaurants(restaurants));
+
+      expect(state.restaurants).not.toHaveLength(0);
     });
   });
 
-  describe('add restaurants data', () => {
-    function reduceAddRestaurant(state) {
-      return reducer(state, addRestaurantData());
-    }
+  describe('changeRestaurantField', () => {
+    it('changes restaurant', () => {
+      const initailState = {
+        restaurant: {
+          name: '이름',
+          category: '분류',
+          address: '주소',
+        },
+      };
 
-    const initialState = {
-      name: '중국집',
-      category: '중식',
-      address: '홍대',
-      restaurants: [],
-    };
+      const state = reducer(initailState, changeRestaurantField({
+        name: 'name',
+        value: '마법사주방',
+      }));
 
-    context('with all input data', () => {
-      it('appends a new restaurants data', () => {
-        const state = reduceAddRestaurant(initialState);
-
-        expect(state.restaurants).toHaveLength(1);
-        expect(state.restaurants[0].id).not.toBeUndefined();
-        expect(state.restaurants[0].text).toBe('중국집 | 중식 | 홍대');
-      });
-
-      it('clears task title', () => {
-        const state = reduceAddRestaurant(initialState);
-
-        expect(state.name).toBe('');
-        expect(state.category).toBe('');
-        expect(state.address).toBe('');
-      });
+      expect(state.restaurant.name).toBe('마법사주방');
     });
+  });
 
-    context('When there is no input value', () => {
-      it('Don`t do it without name', () => {
-        const state = reduceAddRestaurant({ ...initialState, name: '' });
+  describe('addRestaurant', () => {
+    it('append restaurant into restaurants and clear restaurant form', () => {
+      const initailState = {
+        newId: 100,
+        restaurants: [],
+        restaurant: {
+          name: '마법사주방',
+          category: '이탈리안',
+          address: '서울시 강남구 역삼동',
+        },
+      };
 
-        expect(state?.restaurants).toHaveLength(0);
-      });
+      const state = reducer(initailState, addRestaurant());
 
-      it('Don`t do it without category', () => {
-        const state = reduceAddRestaurant({ ...initialState, category: '' });
+      expect(state.restaurants).toHaveLength(1);
 
-        expect(state?.restaurants).toHaveLength(0);
-      });
+      const restaurant = state.restaurants[state.restaurants.length - 1];
+      expect(restaurant.id).toBe(100);
+      expect(restaurant.name).toBe('마법사주방');
 
-      it('Don`t do it without address', () => {
-        const state = reduceAddRestaurant({ ...initialState, address: '' });
+      expect(state.restaurant.name).toBe('');
 
-        expect(state?.restaurants).toHaveLength(0);
-      });
+      expect(state.newId).toBe(101);
     });
   });
 });
