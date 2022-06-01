@@ -6,19 +6,22 @@ import RestaurantsContainer from './RestaurantsContainer';
 
 import RestaurantsCreateContainer from './RestaurantsCreateContainer';
 
-import {
-  setRestaurants,
-} from './actions';
+import CategoriesContainer from './CategoriesContainer';
+
+import { loadRestaurants, loadCategories } from './actions';
 
 export default function App() {
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(setRestaurants([]));
+    dispatch(loadCategories());
+    dispatch(loadRestaurants());
   }, []);
 
   return (
     <div>
       <h2>Restaurants</h2>
+      <CategoriesContainer />
       <RestaurantsContainer />
       <RestaurantsCreateContainer />
     </div>
